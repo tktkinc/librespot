@@ -11,7 +11,21 @@ pub(crate) const IOS_CLIENT_ID: &str = "58bd3c95768941ea9eb4350aaa033eb3";
 // android or ios needs to be mocked, the `os_version` has to be set to a valid version.
 // Otherwise, client-token or login5 requests will fail with a generic invalid-credential error.
 /// See [std::env::consts::OS]
-pub const OS: &str = std::env::consts::OS;
+///
+/// Android reports as Linux, deliberately. librespot otherwise assembles a client that
+/// contradicts itself on an `aarch64-linux-android` build: a keymaster `client_id` on the
+/// session (the only public client whose registration accepts a loopback OAuth redirect), but
+/// an ANDROID `client_id` and Android platform data on the client-token request
+/// ([crate::spclient], which honours the session's id only on macos/windows), plus a mobile
+/// User-Agent. Spotify refuses the mismatch: login5 answers BAD_REQUEST when the session is
+/// keymaster, and INVALID_CREDENTIALS when it is Android and the stored credential is not.
+/// Presenting as Linux makes every one of those agree on keymaster + `desktop_linux`, which is
+/// the arrangement Spotify accepts from a device that is not a real Spotify app install.
+pub const OS: &str = if cfg!(target_os = "android") {
+    "linux"
+} else {
+    std::env::consts::OS
+};
 
 // valid versions for some os:
 // 'android': 30
