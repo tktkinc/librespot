@@ -17,20 +17,20 @@ default = ["native-tls"]
 # Note: Validation is in oauth since it's compiled first in the dependency tree.
 native-tls = [
     "dep:hyper-tls",
-    "hyper-proxy2/tls",
+    "hyper-http-proxy/native-tls",
     "librespot-oauth/native-tls",
     "tokio-tungstenite/native-tls",
 ]
 rustls-tls-native-roots = [
     "__rustls",
-    "hyper-proxy2/rustls",
+    "hyper-http-proxy/rustls-tls-native-roots",
     "hyper-rustls/native-tokio",
     "librespot-oauth/rustls-tls-native-roots",
     "tokio-tungstenite/rustls-tls-native-roots",
 ]
 rustls-tls-webpki-roots = [
     "__rustls",
-    "hyper-proxy2/rustls-webpki",
+    "hyper-http-proxy/rustls-tls-webpki-roots",
     "hyper-rustls/webpki-tokio",
     "librespot-oauth/rustls-tls-webpki-roots",
     "tokio-tungstenite/rustls-tls-webpki-roots",
@@ -62,7 +62,7 @@ httparse = "1.10"
 http = "1.3"
 http-body-util = "0.1"
 hyper = { version = "1.6", features = ["http1", "http2"] }
-hyper-proxy2 = { version = "0.1", default-features = false }
+hyper-http-proxy = { version = "1.2", default-features = false }
 hyper-rustls = { version = "0.27", default-features = false, features = [
     "http1",
     "http2",
@@ -85,7 +85,7 @@ pin-project-lite = "0.2"
 priority-queue = "2.5"
 protobuf = "3.7"
 protobuf-json-mapping = "3.7"
-quick-xml = { version = "0.38", features = ["serialize"] }
+quick-xml = { version = "0.41", features = ["serialize"] }
 rand = { version = "0.9", default-features = false, features = ["thread_rng"] }
 rsa = "0.9"
 serde = { version = "1.0", features = ["derive"] }
