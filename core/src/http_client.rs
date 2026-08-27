@@ -12,7 +12,7 @@ use governor::{
 use http::{Uri, header::HeaderValue};
 use http_body_util::{BodyExt, Full};
 use hyper::{HeaderMap, Request, Response, StatusCode, body::Incoming, header::USER_AGENT};
-use hyper_proxy2::{Intercept, Proxy, ProxyConnector};
+use hyper_http_proxy::{Intercept, Proxy, ProxyConnector};
 use hyper_util::{
     client::legacy::{Client, ResponseFuture, connect::HttpConnector},
     rt::TokioExecutor,

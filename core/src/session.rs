@@ -829,7 +829,12 @@ where
                             if !current_element.is_empty() {
                                 let _ = user_attributes.insert(
                                     current_element.clone(),
-                                    value.xml_content()?.to_string(),
+                                    // quick-xml 0.41 made the XML version explicit. Spotify's
+                                    // user-attributes payload carries no declaration, and the spec
+                                    // says 1.0 is assumed when none is present — which is also what
+                                    // every version before 0.41 did implicitly, so this preserves
+                                    // the existing behaviour rather than choosing new semantics.
+                                    value.xml_content(quick_xml::XmlVersion::Implicit1_0)?.to_string(),
                                 );
                             }
                         }
