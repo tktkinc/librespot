@@ -3,7 +3,6 @@ use std::{
     future::Future,
     io,
     pin::Pin,
-    process::exit,
     sync::{Arc, OnceLock, RwLock, Weak},
     task::{Context, Poll},
     time::{Duration, SystemTime, UNIX_EPOCH},
@@ -361,14 +360,23 @@ impl Session {
         );
     }
 
+    /// Report a non-premium account. Reporting only: this must NEVER end the process.
+    ///
+    /// Upstream calls `exit(1)` here, with its own `// TODO: logout instead of exiting` next to
+    /// it. That is defensible in the `librespot` CLI, where the process IS the player. Embedded
+    /// it is not: this crate runs inside an Android app, so a free account signing in would take
+    /// the whole host down, every other app in it included, on a packet that arrives during a
+    /// perfectly ordinary login. Spotify sends ProductInfo unprompted after connect, so nothing
+    /// the caller does can avoid the path.
+    ///
+    /// The attributes are stored by the caller immediately after this returns, so an embedder
+    /// reads the account type back with `get_user_attribute("type")` and decides for itself what
+    /// to do about it. Deciding is the embedder's job; this function's job is to say so.
     fn check_catalogue(attributes: &UserAttributes) {
         if let Some(account_type) = attributes.get("type") {
             if account_type != "premium" {
                 error!("librespot does not support {account_type:?} accounts.");
                 info!("Please support Spotify and your artists and sign up for a premium account.");
-
-                // TODO: logout instead of exiting
-                exit(1);
             }
         }
     }
